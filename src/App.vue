@@ -1,10 +1,14 @@
 <script setup>
 import { computed, ref } from "vue";
+import PostCard from "./components/PostCard.vue";
 const text = ref("");
 
 const trimmedText = computed(() => text.value.trim());
 
 const posts = ref([]);
+const sortedPost = computed(() =>
+  posts.value.toSorted((postA, postB) => postB.createdAt - postA.createdAt)
+);
 
 function addPost() {
   const newPost = {
@@ -19,6 +23,19 @@ function addPost() {
   };
   posts.value.push(newPost);
   text.value = "";
+}
+
+function deletePost(postId) {
+  posts.value = posts.value.filter((post) => post.id !== postId);
+}
+
+function likePost(PostId) {
+  for (let i = 0; i < posts.value.length; i++) {
+    if (posts.value.at(i).id == PostId) {
+      posts.value.at(i).liked = !posts.value.at(i).liked;
+      break;
+    }
+  }
 }
 </script>
 
@@ -38,7 +55,15 @@ function addPost() {
 
       <p v-if="!posts.length">Pas de post pour le moment</p>
 
-      <article v-for="(post, index) in posts" :key="index" class="card">
+      <PostCard
+        v-for="(post, index) in sortedPost"
+        :key="index"
+        :post="post"
+        @delete="deletePost"
+        @like="likePost"
+      />
+
+      <!--<article v-for="(post, index) in sortedPost" :key="index" class="card">
         <div class="post-header">
           <img
             :src="post.author.avatarUrl"
@@ -50,77 +75,7 @@ function addPost() {
           <a>{{ post.author.username }}</a>
         </div>
         <p>{{ post.content }}</p>
-      </article>
+      </article>-->
     </div>
   </main>
 </template>
-
-<style scoped>
-.container {
-  height: 100vh;
-  margin: 0 auto;
-  max-width: 640px;
-}
-.card {
-  background-color: var(--color-bg-secondary);
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  margin-bottom: 1rem;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  margin-top: 1rem;
-  padding: 1rem 1.5rem;
-  width: 100%;
-}
-textarea {
-  background: none;
-  border: none;
-  color: var(--color-text-primary);
-  flex: 1;
-  margin-bottom: 1rem;
-  outline: none;
-  padding: 0.5rem 0;
-  resize: none;
-  field-sizing: content;
-}
-button {
-  align-self: flex-end;
-  background: none;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
-  cursor: pointer;
-  font-size: 1rem;
-  height: 40px;
-  padding: 0 1rem;
-}
-
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-
-article {
-  padding: 0.75rem 1.5rem;
-  overflow: hidden;
-}
-
-article p {
-  white-space: pre-wrap;
-}
-
-.user-img {
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.post-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-</style>
