@@ -15,7 +15,10 @@ const emit = defineEmits(["delete", "like"]);
         height="50px"
         class="avatar"
       />
-      <a>{{ post.author.username }}</a>
+      <RouterLink
+        :to="{ name: 'user', params: { username: post.author.username } }"
+        >{{ post.author.username }}
+      </RouterLink>
     </header>
     <p>{{ post.content }}</p>
     <footer>
