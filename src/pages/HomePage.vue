@@ -6,23 +6,40 @@ const text = ref("");
 const trimmedText = computed(() => text.value.trim());
 
 const posts = ref([]);
-const sortedPost = computed(() =>
-  posts.value.toSorted((postA, postB) => postB.createdAt - postA.createdAt)
-);
+// const sortedPost = computed(() =>
+//   posts.value.toSorted((postA, postB) => postB.createdAt - postA.createdAt)
+// );
 
 function addPost() {
-  const newPost = {
-    id: Math.random().toString(36).substring(2),
-    content: trimmedText.value,
-    createdAt: new Date(),
-    author: {
-      username: "Nono",
-      avatarUrl:
-        "https://media.licdn.com/dms/image/v2/C4D03AQH0TuKfHrOpfQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1607679351861?e=2147483647&v=beta&t=DQp5RzUGjvkvOkY3dF-EieiqoIV6RVdKdJrpnvaOrpM",
+  // const newPost = {
+  //   id: Math.random().toString(36).substring(2),
+  //   content: trimmedText.value,
+  //   createdAt: new Date(),
+  //   author: {
+  //     username: "Nono",
+  //     avatarUrl:
+  //       "https://media.licdn.com/dms/image/v2/C4D03AQH0TuKfHrOpfQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1607679351861?e=2147483647&v=beta&t=DQp5RzUGjvkvOkY3dF-EieiqoIV6RVdKdJrpnvaOrpM",
+  //   },
+  // };
+  // posts.value.push(newPost);
+  // text.value = "";
+
+  const token = JSON.parse(localStorage.getItem("user")).token;
+  fetch("https://posts-crud-api.vercel.app/posts", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
-  };
-  posts.value.push(newPost);
-  text.value = "";
+    body: JSON.stringify({
+      content: trimmedText.value,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      text.value = "";
+    });
 }
 
 function deletePost(postId) {
