@@ -1,6 +1,6 @@
 <script setup>
 //import router from "@/router";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 import { useRouter } from "vue-router";
 
@@ -23,26 +23,27 @@ function register() {
   // router.push("user/Nono");
 
   fetch("https://posts-crud-api.vercel.app/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      username: username.value,
-      email: email.value,
-      password: password.value,
-    }),
-  })
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username.value,
+            email: email.value,
+            password: password.value
+        })
+            
+    })
     .then((response) => response.json())
     .then((data) => {
-      localStorage.setItem("user", JSON.stringify(data));
-      router.push("/");
-    });
+        localStorage.setItem("user", JSON.stringify(data))
+        router.push("/")
+    })
 }
 
-const trimmedText = computed(
-  () => password.value.trim() && username.value.trim() && email.value.trim()
-);
+// const trimmedText = computed(
+//   () => password.value.trim() && username.value.trim() && email.value.trim()
+// );
 </script>
 
 <style>
@@ -70,13 +71,13 @@ button {
           type="text"
           id="username"
           name="username"
-          required
           v-model="username"
+          required
         />
       </div>
       <div>
         <label for="email">Adresse email :</label>
-        <input type="email" id="email" name="email" required v-model="email" />
+        <input type="email" id="email" name="email" v-model="email" required/>
       </div>
       <div>
         <label for="password">Mot de passe :</label>
@@ -84,12 +85,12 @@ button {
           type="password"
           id="password"
           name="password"
-          required
           v-model="password"
+          required
         />
       </div>
       <div>
-        <button type="submit" :disabled="!trimmedText.length">Créer</button>
+        <button @click="register">Créer</button>
       </div>
     </form>
   </main>
