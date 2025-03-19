@@ -1,7 +1,6 @@
 <script setup>
-//import router from "@/router";
+import { computed } from "vue";
 import { ref } from "vue";
-
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -31,8 +30,7 @@ function register() {
             username: username.value,
             email: email.value,
             password: password.value
-        })
-            
+        })  
     })
     .then((response) => response.json())
     .then((data) => {
@@ -41,9 +39,11 @@ function register() {
     })
 }
 
-// const trimmedText = computed(
-//   () => password.value.trim() && username.value.trim() && email.value.trim()
-// );
+const trimmedText = computed(
+  () => password.value.trim() && username.value.trim() && email.value.trim()
+);
+
+//register();
 </script>
 
 <style>
@@ -90,7 +90,7 @@ button {
         />
       </div>
       <div>
-        <button @click="register">Créer</button>
+        <button :disabled="!trimmedText.length">Créer</button>
       </div>
     </form>
   </main>
